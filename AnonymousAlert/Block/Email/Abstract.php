@@ -1,0 +1,116 @@
+<?php
+
+/**
+ * Product Alert Abstract Email Block
+ *
+ * @category   YourSite
+ * @package    YourSite_AnonymousAlert
+ * @author     Magento Core Team <core@magentocommerce.com>
+ */
+abstract class YourSite_AnonymousAlert_Block_Email_Abstract extends Mage_Core_Block_Template
+{
+    /**
+     * Product collection array
+     *
+     * @var array
+     */
+    protected $_products = array();
+
+    /**
+     * Current Store scope object
+     *
+     * @var Mage_Core_Model_Store
+     */
+    protected $_store;
+
+    /**
+     * Set Store scope
+     *
+     * @param int|string|Mage_Core_Model_Website|Mage_Core_Model_Store $store
+     * @return YourSite_AnonymousAlert_Block_Email_Abstract
+     */
+    public function setStore($store)
+    {
+        if ($store instanceof Mage_Core_Model_Website) {
+            $store = $store->getDefaultStore();
+        }
+        if (!$store instanceof Mage_Core_Model_Store) {
+            $store = Mage::app()->getStore($store);
+        }
+
+        $this->_store = $store;
+
+        return $this;
+    }
+
+    /**
+     * Retrieve current store object
+     *
+     * @return Mage_Core_Model_Store
+     */
+    public function getStore()
+    {
+        if (is_null($this->_store)) {
+            $this->_store = Mage::app()->getStore();
+        }
+        return $this->_store;
+    }
+
+    /**
+     * Reset product collection
+     *
+     */
+    public function reset()
+    {
+        $this->_products = array();
+    }
+
+    /**
+     * Add product to collection
+     *
+     * @param Mage_Catalog_Model_Product $product
+     */
+    public function addProduct(Mage_Catalog_Model_Product $product)
+    {
+        $this->_products[$product->getId()] = $product;
+    }
+
+    /**
+     * Retrieve product collection array
+     *
+     * @return array
+     */
+    public function getProducts()
+    {
+        return $this->_products;
+    }
+
+    /**
+     * Get store url params
+     *
+     * @return string
+     */
+    protected function _getUrlParams()
+    {
+        return array(
+            '_store'        => $this->getStore(),
+            '_store_to_url' => true
+        );
+    }
+
+    /**
+     * Get filtered product short description to be inserted into mail
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @return string|null
+     */
+    public function _getFilteredProductShortDescription(Mage_Catalog_Model_Product $product)
+    {
+        $shortDescription = $product->getShortDescription();
+        if ($shortDescription) {
+            $shortDescription = Mage::getSingleton('core/input_filter_maliciousCode')->filter($shortDescription);
+        }
+        return $shortDescription;
+    }
+	
+}

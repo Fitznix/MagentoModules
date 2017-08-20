@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <YourSite_Update>
+            <version>1.0.0</version>
+            <depends>
+                <!-- no dependencies -->
+            </depends>
+        </YourSite_Update>
+    </modules>
+    <global>
+        <models>
+        	<update>
+        		<class>YourSite_Update_Model</class>   		
+        	</update>
+        </models>
+        <blocks>
+        	<update>
+        		<class>YourSite_Update_Block</class>  		
+        	</update>
+        </blocks>
+        <resources />
+        <extraconfig />
+        <helpers>
+            <update>
+                <class>YourSite_Update_Helper</class>
+            </update>
+        </helpers>
+    </global>
+    <frontend>
+        <routers>
+            <YourSite_update>
+                <use>standard</use>
+                <args>
+                    <module>YourSite_Update</module>
+                    <frontName>update</frontName>
+                </args>
+            </YourSite_update>
+        </routers>
+    </frontend>
+    <admin>
+        <routers>
+            <YourSite_update>
+                <use>admin</use>
+                <args>
+                    <module>YourSite_Update</module>
+                    <frontName>update</frontName>
+                </args>
+            </YourSite_update>
+        </routers>
+    </admin>
+    <crontab>
+        <jobs>
+            <YourSite_update_stock>
+            	<schedule>
+                    <cron_expr>0 15 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>update/observer::stock</model>
+                </run>
+            </YourSite_update_stock>
+            <YourSite_update_bundle_prices>
+            	<schedule>
+                    <cron_expr>0 4 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>update/observer::updateBundlePrices</model>
+                </run>
+            </YourSite_update_bundle_prices>
+            <YourSite_update_sync>
+            	<schedule>
+                    <cron_expr>0 2 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>update/observer::sync</model>
+                </run>
+            </YourSite_update_sync>
+            <YourSite_update_bundle>
+            	<schedule>
+                    <cron_expr>0 3 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>update/observer::bundles</model>
+                </run>
+            </YourSite_update_bundle>
+        </jobs>
+    </crontab>
+</config>

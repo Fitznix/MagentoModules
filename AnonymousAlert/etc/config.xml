@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <YourSite_AnonymousAlert>
+            <version>1.0.0</version>
+        </YourSite_AnonymousAlert>
+    </modules>
+    <global>
+        <models>
+        	<anonymousalert>
+        		<class>YourSite_AnonymousAlert_Model</class> 
+        		<resourceModel>anonymousalert_resource</resourceModel>
+        	</anonymousalert>
+        	<anonymousalert_resource>
+	            <class>YourSite_AnonymousAlert_Model_Resource</class>
+	            <entities>
+	               <stock>
+	                   <table>anonymous_alert_stock</table>
+	               </stock>
+	            </entities>
+           </anonymousalert_resource>     		       	
+        </models>
+        <blocks>
+        	<anonymousalert>
+        		<class>YourSite_AnonymousAlert_Block</class>     		
+        	</anonymousalert>
+        </blocks>
+        <resources>
+        	<anonymousalert_setup>
+                <setup>
+                    <module>YourSite_AnonymousAlert</module>
+                </setup>
+            </anonymousalert_setup>
+        </resources>
+        <extraconfig />
+        <helpers>
+            <anonymousalert>
+                <class>YourSite_AnonymousAlert_Helper</class>
+            </anonymousalert>
+        </helpers>
+        <template>
+            <email>
+                <catalog_anonymousalert_email_stock_template translate="label" module="anonymousalert">
+                    <label>Anonymous stock alert</label>
+                    <file>anonymous_stock_alert.html</file>
+                    <type>html</type>
+                </catalog_anonymousalert_email_stock_template>
+                <catalog_anonymousalert_cron_error_email_template translate="label" module="anonymousalert">
+                    <label>Anonymous alerts Cron error</label>
+                    <file>anonymous_alert_cron_error.html</file>
+                    <type>html</type>
+                </catalog_anonymousalert_cron_error_email_template>
+            </email>
+        </template>    	
+    </global>
+    <frontend>
+        <routers>
+            <anonymousalert>
+                <use>standard</use>
+                <args>
+                    <module>YourSite_AnonymousAlert</module>
+                    <frontName>anonymousalert</frontName>
+                </args>
+            </anonymousalert>
+        </routers>
+    </frontend>
+    <default>
+        <catalog>
+            <anonymousalert>
+                <email_stock_template>catalog_anonymousalert_email_stock_template</email_stock_template>
+                <email_identity>general</email_identity>
+            </anonymousalert>
+            <anonymousalert_cron>
+                <error_email/>
+                <error_email_template>catalog_anonymousalert_cron_error_email_template</error_email_template>
+                <error_email_identity>general</error_email_identity>
+            </anonymousalert_cron>
+        </catalog>
+    </default>
+    <admin/>
+    <crontab>
+        <jobs>
+            <catalog_anonymous_alert>
+            	<schedule>
+                    <cron_expr>30 2 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>anonymousalert/observer::process</model>
+                </run>
+            </catalog_anonymous_alert>
+        </jobs>
+    </crontab>
+</config>
